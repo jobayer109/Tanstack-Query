@@ -6,7 +6,7 @@ const api = axios.create({
 
 const fetchData = async () => {
   try {
-    const response = await api.get("/posts");
+    const response = await api.get("/posts?_limit=10");
     return response.data;
   } catch (error) {
     console.error("Error fetching data:", error);

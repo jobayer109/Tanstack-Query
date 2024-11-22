@@ -5,6 +5,8 @@ const FetchRQ = () => {
   const { data } = useQuery({
     queryKey: ["posts"],
     queryFn: fetchData,
+    gcTime: 1000,
+    staleTime: 10000,
   });
 
   return (
