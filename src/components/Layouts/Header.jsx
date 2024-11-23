@@ -9,26 +9,10 @@ const Header = () => (
       <ul className="flex space-x-4">
         <li>
           <Link
-            to="/"
-            className="hover:text-gray-300 transition duration-300 ease-in-out"
-          >
-            Home
-          </Link>
-        </li>
-        <li>
-          <Link
-            to="/trad"
-            className="hover:text-gray-300 transition duration-300 ease-in-out"
-          >
-            Trad
-          </Link>
-        </li>
-        <li>
-          <Link
             to="/rq"
             className="hover:text-gray-300 transition duration-300 ease-in-out"
           >
-            RQ
+            React Query
           </Link>
         </li>
       </ul>
