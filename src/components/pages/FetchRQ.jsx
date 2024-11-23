@@ -1,11 +1,19 @@
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { fetchAllPosts } from "../API/api";
+import { deletePost, fetchAllPosts } from "../API/api";
 import LoadingPage from "../UI/LoadingPage";
 
 const FetchRQ = () => {
   const [page, setPage] = useState(1);
+  const queryClient = useQueryClient();
+
+  // Get all posts
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["posts", page],
     queryFn: () => fetchAllPosts(page),
@@ -13,6 +21,18 @@ const FetchRQ = () => {
     staleTime: 10000,
     placeholderData: keepPreviousData,
   });
+
+  // Delete a post
+  const handleDeletePost = useMutation({
+    mutationFn: (id) => deletePost(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(["posts", page], (old) => {
+        return old.filter((post) => post.id !== id);
+      });
+    },
+  });
+
+  // Update a post
 
   if (isLoading) {
     return <LoadingPage />;
@@ -54,7 +74,7 @@ const FetchRQ = () => {
       </div>
 
       {data && (
-        <ul className="mt-12 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-12 mb-20 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {data.map(({ id, title, body }) => (
             <li
               key={id}
@@ -70,6 +90,16 @@ const FetchRQ = () => {
                   <p className="mt-4 text-gray-600">{body}</p>
                 </div>
               </NavLink>
+
+              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-bl-lg rounded-br-lg shadow-sm">
+                <button
+                  onClick={() => handleDeletePost.mutate(id)}
+                  type="button"
+                  className="text-red-500 border border-red-400 px-4 py-2 rounded-md hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))}
         </ul>

@@ -24,4 +24,14 @@ const fetchSinglePost = async (id) => {
   }
 };
 
-export { fetchAllPosts, fetchSinglePost };
+const deletePost = async (id) => {
+  try {
+    const response = await api.delete(`/posts/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("Error deleting data:", error);
+    throw error;
+  }
+};
+
+export { deletePost, fetchAllPosts, fetchSinglePost };
