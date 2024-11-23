@@ -34,4 +34,16 @@ const deletePost = async (id) => {
   }
 };
 
-export { deletePost, fetchAllPosts, fetchSinglePost };
+const updatePost = async (id) => {
+  try {
+    const response = await api.patch(`/posts/${id}`, {
+      title: "Updated Title",
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating data:", error);
+    throw error;
+  }
+};
+
+export { deletePost, fetchAllPosts, fetchSinglePost, updatePost };

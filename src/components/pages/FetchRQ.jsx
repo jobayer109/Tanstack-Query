@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { deletePost, fetchAllPosts } from "../API/api";
+import { deletePost, fetchAllPosts, updatePost } from "../API/api";
 import LoadingPage from "../UI/LoadingPage";
 
 const FetchRQ = () => {
@@ -33,6 +33,16 @@ const FetchRQ = () => {
   });
 
   // Update a post
+  const handleUpdatePost = useMutation({
+    mutationFn: (id) => updatePost(id),
+    onSuccess: (data, id) => {
+      queryClient.setQueryData(["posts", page], (old) => {
+        return old.map((post) => {
+          return post.id === id ? { ...post, title: "Updated Title" } : post;
+        });
+      });
+    },
+  });
 
   if (isLoading) {
     return <LoadingPage />;
@@ -91,13 +101,20 @@ const FetchRQ = () => {
                 </div>
               </NavLink>
 
-              <div className="flex items-center justify-between p-4 bg-gray-50 rounded-bl-lg rounded-br-lg shadow-sm">
+              <div className="flex items-center gap-2 p-4 bg-gray-50 rounded-bl-lg rounded-br-lg shadow-sm">
                 <button
                   onClick={() => handleDeletePost.mutate(id)}
                   type="button"
                   className="text-red-500 border border-red-400 px-4 py-2 rounded-md hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                 >
                   Delete
+                </button>
+                <button
+                  onClick={() => handleUpdatePost.mutate(id)}
+                  type="button"
+                  className="text-red-500 border border-red-400 px-4 py-2 rounded-md hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+                >
+                  Update
                 </button>
               </div>
             </li>
